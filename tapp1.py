@@ -24,17 +24,31 @@ st.markdown("""
         color: #202124 !important;
     }
 
-    /* 박스 간 간격 및 내부 여백 최적화 (수정됨) */
+    /* 도시 선택 박스(Selectbox) 글자색 및 배경색 강제 설정 */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
+        color: #202124 !important;
+    }
+    div[data-baseweb="select"] * {
+        color: #202124 !important;
+    }
+    /* 드롭다운 리스트 내부 글자색 */
+    ul[role="listbox"] li {
+        color: #202124 !important;
+        background-color: white !important;
+    }
+
+    /* 박스 간 간격 및 내부 여백 최적화 */
     div[data-testid="stVerticalBlock"] > div:has(div.stMarkdown) {
         background-color: white !important; 
-        padding: 8px 12px !important; /* 내부 상하좌우 여백 줄임 */
+        padding: 8px 12px !important; 
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        margin-bottom: -10px !important; /* 박스 사이 간격 줄임 */
+        margin-bottom: -10px !important; 
         border: 1px solid #EEEEEE;
     }
 
-    /* 버튼 모바일 최적화 (높이 소폭 조절) */
+    /* 버튼 모바일 최적화 */
     .stButton > button {
         width: 100%; border-radius: 12px; height: 3em; font-weight: bold;
         background-color: #4285F4 !important; 
@@ -117,7 +131,6 @@ def info_card(title, content, is_hotel=False):
     bg_color = "#f3e5f5" if is_hotel else "#e1f5fe"
     border_color = "#9c27b0" if is_hotel else "#0288d1"
     icon = "🏨" if is_hotel else "📌"
-    # 내부 padding을 8px로 줄임
     st.markdown(f"""<div style="background-color: {bg_color}; padding: 8px 12px; border-radius: 10px; border-left: 5px solid {border_color}; margin-bottom: 5px;">
         <b style="color: {border_color} !important; font-size: 1.0em;">{icon} {title}</b><br>
         <span style="font-size: 0.9em; color: #202124 !important; line-height: 1.4;">{content}</span>
@@ -151,6 +164,7 @@ with st.container():
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<h4 style='margin-bottom:2px;'>실시간 날씨</h4>", unsafe_allow_html=True)
+        # selectbox 내부 텍스트 색상 및 배경 강제 적용
         target_city = st.selectbox("", ["타이중", "타이베이","가오슝"], label_visibility="collapsed")
         st.info(f"**{target_city}:** {get_realtime_weather(target_city)}")
     with col2:
