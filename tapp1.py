@@ -27,10 +27,10 @@ st.markdown("""
     /* 카드형 디자인 커스텀 */
     div[data-testid="stVerticalBlock"] > div:has(div.stMarkdown) {
         background-color: white !important; 
-        padding: 15px; 
-        border-radius: 15px;
+        padding: 12px; 
+        border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         border: 1px solid #EEEEEE;
     }
 
@@ -260,3 +260,4 @@ with tabs[2]:
     st.info("연말연시 대만은 한국보다 따뜻하지만 일교차가 큽니다.")
     st.info("가벼운 외투, 우산/우비 필수, 레이어드 복장를 챙기세요!")   
     st.info("입국 시 디지털 입국신고서 작성, 육가공품 반입 금지, 전자담배 금지")
+
