@@ -24,17 +24,17 @@ st.markdown("""
         color: #202124 !important;
     }
 
-    /* 박스 간 간격 및 내부 여백 최적화 (수정됨) */
+    /* 박스 간 간격 및 내부 여백 최적화 */
     div[data-testid="stVerticalBlock"] > div:has(div.stMarkdown) {
         background-color: white !important; 
-        padding: 8px 12px !important; /* 내부 상하좌우 여백 줄임 */
+        padding: 8px 12px !important; 
         border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        margin-bottom: -10px !important; /* 박스 사이 간격 줄임 */
+        margin-bottom: -10px !important; 
         border: 1px solid #EEEEEE;
     }
 
-    /* 버튼 모바일 최적화 (높이 소폭 조절) */
+    /* 버튼 모바일 최적화 */
     .stButton > button {
         width: 100%; border-radius: 12px; height: 3em; font-weight: bold;
         background-color: #4285F4 !important; 
@@ -70,6 +70,12 @@ st.markdown("""
     }
     .stAlert p {
         color: #155724 !important;
+    }
+
+    /* 선택 박스 가독성 수정 */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
+        color: #202124 !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -110,14 +116,13 @@ def map_link_btn(place_name, btn_text=None):
     encoded_place = urllib.parse.quote(place_name)
     url = f"https://www.google.com/maps/search/{encoded_place}"
     st.markdown(f"""<a href="{url}" target="_blank" style="text-decoration: none;">
-        <div style="display: block; background-color: #4285F4; color: white !important; padding: 8px; border-radius: 8px; font-size: 0.85em; font-weight: bold; margin-bottom: 5px; text-align: center;">{text}</div>
+        <div style="display: block; background-color: #4285F4; color: white !important; padding: 8px; border-radius: 10px; font-size: 0.85em; font-weight: bold; margin-bottom: 5px; text-align: center;">{text}</div>
     </a>""", unsafe_allow_html=True)
 
 def info_card(title, content, is_hotel=False):
     bg_color = "#f3e5f5" if is_hotel else "#e1f5fe"
     border_color = "#9c27b0" if is_hotel else "#0288d1"
     icon = "🏨" if is_hotel else "📌"
-    # 내부 padding을 8px로 줄임
     st.markdown(f"""<div style="background-color: {bg_color}; padding: 8px 12px; border-radius: 10px; border-left: 5px solid {border_color}; margin-bottom: 5px;">
         <b style="color: {border_color} !important; font-size: 1.0em;">{icon} {title}</b><br>
         <span style="font-size: 0.9em; color: #202124 !important; line-height: 1.4;">{content}</span>
@@ -138,12 +143,11 @@ st.info("📅 12/31 ~ 1/4 부산 출발 (타이베이-타이중-타이베이)")
 # --- 우버 호출 섹션 ---
 with st.container():
     st.markdown("<h4 style='margin-bottom:2px;'>🚖 우버(Uber) 호출</h4>", unsafe_allow_html=True)
-    uber_dest = st.text_input("", placeholder="목적지 입력 (예: 린 호텔)", key="uber_input", label_visibility="collapsed")
-    if st.button("🚕 우버 앱 열기"):
-        if uber_dest:
-            encoded_dest = urllib.parse.quote(uber_dest)
-            uber_url = f"https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[nickname]={encoded_dest}"
-            st.markdown(f'<p><a href="{uber_url}" target="_blank" style="text-decoration:none; color:white !important; background-color:#000000; padding:8px; border-radius:10px; display:block; text-align:center; font-weight:bold;">🚕 우버 호출하기</a></p>', unsafe_allow_html=True)
+    uber_dest = st.text_input("", placeholder="목적지 입력 후 엔터", key="uber_input", label_visibility="collapsed")
+    if uber_dest:
+        encoded_dest = urllib.parse.quote(uber_dest)
+        uber_url = f"https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[nickname]={encoded_dest}"
+        st.markdown(f'<a href="{uber_url}" target="_blank" style="text-decoration:none; color:white !important; background-color:#000000; padding:8px; border-radius:10px; display:block; text-align:center; font-weight:bold;">🚕 우버 호출하기 ({uber_dest})</a>', unsafe_allow_html=True)
 
 st.divider()
 
@@ -155,12 +159,15 @@ with st.container():
         st.info(f"**{target_city}:** {get_realtime_weather(target_city)}")
     with col2:
         st.markdown("<h4 style='margin-bottom:2px;'>🚀 지도 검색</h4>", unsafe_allow_html=True)
-        search_place = st.text_input("", placeholder="장소 입력", key="map_input", label_visibility="collapsed")
-        if st.button("🔍 찾기"):
-            if search_place:
-                encoded_search = urllib.parse.quote(search_place)
-                map_url = f"https://www.google.com/maps/search/{encoded_search}"
-                st.markdown(f'<p><a href="{map_url}" target="_blank" style="text-decoration:none; color:white !important; background-color:#1A73E8; padding:8px; border-radius:10px; display:block; text-align:center; font-weight:bold;">📍 지도 열기</a></p>', unsafe_allow_html=True)
+        # 지명을 입력하면 바로 아래 버튼이 생기도록 수정
+        search_place = st.text_input("", placeholder="지명 입력 후 엔터", key="map_input", label_visibility="collapsed")
+        if search_place:
+            encoded_search = urllib.parse.quote(search_place)
+            map_url = f"https://www.google.com/maps/search/{encoded_search}"
+            # 찾기 버튼 대신 클릭 시 바로 이동하는 '단일 버튼' 생성
+            st.markdown(f"""<a href="{map_url}" target="_blank" style="text-decoration: none;">
+                <div style="display: block; background-color: #1A73E8; color: white !important; padding: 8px; border-radius: 10px; font-size: 0.9em; font-weight: bold; text-align: center; margin-top: 5px;">📍 지도 열기: {search_place}</div>
+            </a>""", unsafe_allow_html=True)
 
 st.divider()
 
@@ -226,12 +233,11 @@ with tabs[0]:
 
 with tabs[1]:
     user_q = st.text_input("장소 검색", placeholder="예: 타이중 맛집", key="search_tab_input", label_visibility="collapsed")
-    if st.button("블로그 찾기"):
-        if user_q:
-            items, _ = search_naver_blog(user_q, count=10)
-            if items:
-                for i, item in enumerate(items, 1):
-                    st.markdown(f"<div style='font-size:0.9em; margin-bottom:5px;'><b>{i}.</b> <a href='{item['link']}'>{clean_html(item['title'])}</a></div>", unsafe_allow_html=True)
+    if user_q:
+        items, _ = search_naver_blog(user_q, count=10)
+        if items:
+            for i, item in enumerate(items, 1):
+                st.markdown(f"<div style='font-size:0.9em; margin-bottom:5px;'><b>{i}.</b> <a href='{item['link']}'>{clean_html(item['title'])}</a></div>", unsafe_allow_html=True)
 
 with tabs[2]:
     st.header("✅ 체크")
